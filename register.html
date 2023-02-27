@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Serverless Todo with Vue and AWS Lambda - Register</title>
+    <link rel="stylesheet" href="https://unpkg.com/todomvc-app-css@2.4.1/index.css" type="text/css" />
+  </head>
+  <body>
+  <div id="app">
+    <section class="todoapp">
+      <header class="header">
+        <h1>register</h1>
+        <input
+          id="username"
+          class="new-todo"
+          autofocus
+          placeholder="username"
+          required
+        >
+        
+        <input
+          id="password"
+          class="new-todo"
+          autofocus
+          placeholder="password"
+          type="password"
+          required
+        >
+        <input
+          id="fullname"
+          class="new-todo"
+          autofocus
+          placeholder="Full name"
+          required
+        >
+
+        <input
+          id="email"
+          class="new-todo"
+          autofocus
+          placeholder="email"
+          type="email"
+          required
+        >
+      </header>
+  </div>
+  <script>
+    let apiBaseUrl = '{{API_BASE_URL}}';
+    let appBaseUrl = (window.location.protocol + '//' + window.location.hostname + window.location.pathname).replace('/register.html', '');
+    
+    // AWS Cloud9 development
+    if (apiBaseUrl.indexOf('API_BASE_URL') !== -1) {
+      apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
+    }
+
+    function $(el) { 
+      return document.querySelector(el); 
+    }
+    
+    async function register(params) {
+      const loginUrl = apiBaseUrl + '/register';
+      const userData = {
+        username: params.username.trim(),
+        password: params.password.trim(),
+        fullname: params.fullname.trim(),
+        email: params.email.trim()
+      };
+      const response = await window.fetch(loginUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+      
+      if ([200, 201].indexOf(response.status) === -1) {
+        throw (await response.json()).message;
+      }
+      return response.json();
+    }
+
+    $('#username').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        $('#password').focus();
+        $('#password').select();
+      }
+    });
+    
+    $('#password').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        $('#fullname').focus();
+        $('#fullname').select();
+      }
+    });
+    
+    $('#fullname').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        $('#email').focus();
+        $('#email').select();
+      }
+    });
+    
+    $('#email').addEventListener('keyup', async (e) => {
+      if (e.key === 'Enter') {
+        try {
+          const response = await register({
+            username: $('#username').value,
+            password: $('#password').value,
+            fullname: $('#fullname').value,
+            email: $('#email').value
+          });
+          console.log(response);
+          
+          window.location = appBaseUrl + '/login.html';
+        } catch (err) {
+          alert(err);
+        }
+      }
+    });
+  </script>
+  </body>
+</html>
