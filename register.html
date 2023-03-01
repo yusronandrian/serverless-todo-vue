@@ -52,6 +52,10 @@
     if (apiBaseUrl.indexOf('API_BASE_URL') !== -1) {
       apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
     }
+    
+    if (window.localStorage.getItem('logged_in') === 'true') {
+      window.location = appBaseUrl + '/index.html';
+    }
 
     function $(el) { 
       return document.querySelector(el); 
