@@ -99,6 +99,12 @@ createApp({
           'Authorization': 'Bearer ' + window.localStorage.getItem('auth_token')
         }
       }).then( response => {
+        if (response.status >= 400) {
+          window.location = 'login.html' // relative path
+          window.localStorage.setItem('logged_in', false);
+          window.localStorage.removeItem('auth_token');
+          return;
+        }
         response.json().then( items => {
           console.log(items)
           this.todos = items
@@ -135,8 +141,14 @@ createApp({
       const urlPath = params.path || '';
       
       fetch(apiBaseUrl + urlPath, fetchParam)
-      .then(resp1 => resp1.json())
-      .then(resp2 => console.log(`Successfully ${method} todo.`, resp2))
+      .then(response => {
+        if (response.status >= 400) {
+          window.location = 'login.html' // relative path
+          window.localStorage.setItem('logged_in', false);
+          window.localStorage.removeItem('auth_token');
+          return;
+        }
+      })
       .catch(err => console.log(`ERR: Can not ${method} todo. Message: ` + err.toString()))
     },
 
