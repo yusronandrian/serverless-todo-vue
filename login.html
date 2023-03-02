@@ -35,12 +35,11 @@
   </div>
   <script>
     let apiBaseUrl = '{{API_BASE_URL}}';
-    let appBaseUrl = (window.location.protocol + '//' + window.location.hostname + window.location.pathname).replace('/login.html', '');
     
     if (window.location.search.indexOf('logout') !== -1) {
       window.localStorage.removeItem('auth_token');
       window.localStorage.setItem('logged_in', false);
-      window.location = appBaseUrl + '/login.html';
+      window.location = 'login.html';
     }
     
     // AWS Cloud9 development
@@ -85,7 +84,7 @@
           const response = await login($('#username').value, $('#password').value);
           window.localStorage.setItem('logged_in', true);
           window.localStorage.setItem('auth_token', response.token);
-          window.location = appBaseUrl + '/index.html';
+          window.location = 'index.html';
         } catch (err) {
           alert('Invalid username or password');
         }
